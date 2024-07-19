@@ -235,7 +235,7 @@ impl Uring {
         F: AsRawFd,
         B: 'a + AsIoVec,
     {
-        let iov = iov.into_new_iovec();
+        let iov = iov.as_new_iovec();
 
         self.with_sqe(None, true, |sqe| {
             sqe.prep_rw(
@@ -296,7 +296,7 @@ impl Uring {
         F: AsRawFd,
         B: AsIoVec + AsIoVecMut,
     {
-        let iov = iov.into_new_iovec();
+        let iov = iov.as_new_iovec();
 
         self.with_sqe(None, true, |sqe| {
             sqe.prep_rw(
@@ -578,7 +578,7 @@ impl Uring {
         B: 'a + AsIoVec,
     {
         self.with_sqe(
-            Some(iov.into_new_iovec()),
+            Some(iov.as_new_iovec()),
             false,
             |sqe| {
                 sqe.prep_rw(
@@ -648,7 +648,7 @@ impl Uring {
         B: AsIoVec + AsIoVecMut,
     {
         self.with_sqe(
-            Some(iov.into_new_iovec()),
+            Some(iov.as_new_iovec()),
             false,
             |sqe| {
                 sqe.prep_rw(
