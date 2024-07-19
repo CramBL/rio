@@ -11,21 +11,11 @@ use super::{
     io_uring::io_uring_cqe, FromCqe, Measure, Uring, M,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct CompletionState {
     done: bool,
     item: Option<io::Result<io_uring_cqe>>,
     waker: Option<Waker>,
-}
-
-impl Default for CompletionState {
-    fn default() -> CompletionState {
-        CompletionState {
-            done: false,
-            item: None,
-            waker: None,
-        }
-    }
 }
 
 /// A Future value which may or may not be filled
@@ -55,9 +45,9 @@ pub struct Filler {
 
 /// Create a new `Filler` and the `Completion`
 /// that will be filled by its completion.
-pub fn pair<'a, C: FromCqe>(
-    uring: &'a Uring,
-) -> (Completion<'a, C>, Filler) {
+pub fn pair<C: FromCqe>(
+    uring: &Uring,
+) -> (Completion<'_, C>, Filler) {
     let mu =
         Arc::new(Mutex::new(CompletionState::default()));
     let cv = Arc::new(Condvar::new());
