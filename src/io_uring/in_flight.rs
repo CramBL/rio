@@ -2,6 +2,12 @@ use std::ptr::null_mut;
 
 use super::*;
 
+#[allow(unsafe_code)]
+unsafe impl Send for InFlight {}
+
+#[allow(unsafe_code)]
+unsafe impl Sync for InFlight {}
+
 pub(crate) struct InFlight {
     iovecs: UnsafeCell<Vec<libc::iovec>>,
     msghdrs: UnsafeCell<Vec<libc::msghdr>>,
@@ -26,11 +32,15 @@ impl InFlight {
             };
             size
         ]);
-        let msghdrs = UnsafeCell::new(vec![
-            #[allow(unsafe_code)]
-            unsafe { MaybeUninit::<libc::msghdr>::zeroed().assume_init() };
-            size
-        ]);
+        let msghdrs =
+            UnsafeCell::new(vec![
+                #[allow(unsafe_code)]
+                unsafe {
+                    MaybeUninit::<libc::msghdr>::zeroed()
+                        .assume_init()
+                };
+                size
+            ]);
 
         let mut filler_vec = Vec::with_capacity(size);
         for _ in 0..size {
