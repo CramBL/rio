@@ -74,7 +74,7 @@ impl Cq {
                         as _,
                     params.cq_entries as usize,
                 ),
-                in_flight: in_flight.clone(),
+                in_flight: Arc::clone(&in_flight),
                 ticket_queue: ticket_queue.clone(),
             }
         })
@@ -136,8 +136,8 @@ impl Cq {
             // poison pill, it will be up to as large
             // as the completion queue length.
             let (ticket, poisoned) =
-                if cqe.user_data > u64::max_value() / 2 {
-                    (cqe.user_data ^ u64::max_value(), true)
+                if cqe.user_data > u64::MAX / 2 {
+                    (cqe.user_data ^ u64::MAX, true)
                 } else {
                     (cqe.user_data, false)
                 };

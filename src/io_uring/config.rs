@@ -99,13 +99,13 @@ impl Config {
         let cq = Cq::new(
             &params,
             ring_fd,
-            in_flight.clone(),
-            ticket_queue.clone(),
+            Arc::clone(&in_flight),
+            Arc::clone(&ticket_queue),
         )?;
 
         std::thread::spawn(move || {
-            let mut cq = cq;
-            cq.reaper(ring_fd)
+            let mut thread_cq = cq;
+            thread_cq.reaper(ring_fd)
         });
 
         Ok(Rio(Arc::new(Uring::new(
