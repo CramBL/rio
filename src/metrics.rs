@@ -196,33 +196,18 @@ impl Metrics {
             lat("ticket q push", &self.ticket_queue_push),
         ]);
 
-        println!(
-            "{}",
-            std::iter::repeat("-")
-                .take(134)
-                .collect::<String>()
-        );
+        println!("{}", ("-").repeat(134));
         println!("reaping and waiting:");
         p(vec![
             lat("reap_ready", &self.reap_ready),
             lat("wait", &self.wait),
         ]);
 
-        println!(
-            "{}",
-            std::iter::repeat("-")
-                .take(134)
-                .collect::<String>()
-        );
+        println!("{}", ("-").repeat(134));
 
         #[cfg(feature = "measure_allocs")]
         {
-            println!(
-                "{}",
-                std::iter::repeat("-")
-                    .take(134)
-                    .collect::<String>()
-            );
+            println!("{}", ("-").repeat(134));
             println!("allocation statistics:");
             println!(
                 "total allocations: {}",
