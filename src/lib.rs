@@ -1,6 +1,6 @@
-//! A steamy river of uring. Fast IO using io_uring.
+//! A steamy river of uring. Fast IO using `io_uring`.
 //!
-//! io_uring is going to change everything. It will speed up your
+//! `io_uring` is going to change everything. It will speed up your
 //! disk usage by like 300%. Go ahead, run the `O_DIRECT` example
 //! and compare that to using a threadpool or anything
 //! you want. It's not gonna come close!
@@ -17,7 +17,7 @@
 //! will all be in scope at the same time while the Completion
 //! is in-use.
 //!
-//! Most of the other io_uring libraries make
+//! Most of the other `io_uring` libraries make
 //! it really easy to blow your legs off with
 //! use-after-frees. `rio` uses standard Rust
 //! lifetime specification  to make most use-after-frees
@@ -61,7 +61,7 @@
 //! ```
 //!
 //!
-//! Really shines with O_DIRECT:
+//! Really shines with `O_DIRECT`:
 //!
 //! ```no_run
 //! use std::{
@@ -146,9 +146,8 @@
     clippy::explicit_iter_loop,
     clippy::expl_impl_clone_on_copy,
     clippy::fallible_impl_from,
-    clippy::filter_map,
     clippy::filter_map_next,
-    clippy::find_map,
+    clippy::manual_find_map,
     clippy::float_arithmetic,
     clippy::get_unwrap,
     clippy::if_not_else,
@@ -168,14 +167,12 @@
     clippy::needless_continue,
     clippy::needless_pass_by_value,
     clippy::non_ascii_literal,
-    clippy::option_map_unwrap_or,
-    clippy::option_map_unwrap_or_else,
+    clippy::map_unwrap_or,
     clippy::path_buf_push_overwrite,
     clippy::print_stdout,
-    clippy::pub_enum_variant_names,
+    clippy::enum_variant_names,
     clippy::redundant_closure_for_method_calls,
-    clippy::replace_consts,
-    clippy::result_map_unwrap_or_else,
+    clippy::map_unwrap_or,
     clippy::shadow_reuse,
     clippy::shadow_same,
     clippy::shadow_unrelated,
@@ -189,7 +186,7 @@
     clippy::used_underscore_binding,
     clippy::wildcard_dependencies,
     clippy::wildcard_enum_match_arm,
-    clippy::wrong_pub_self_convention
+    clippy::wrong_self_convention
 )]
 
 use std::io;
