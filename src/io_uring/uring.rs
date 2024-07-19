@@ -413,7 +413,7 @@ impl Uring {
         file: &'a File,
         ordering: Ordering,
     ) -> Completion<'a, ()> {
-        self.with_sqe(None, false, |mut sqe| {
+        self.with_sqe(None, false, |sqe| {
             sqe.prep_rw(
                 IORING_OP_FSYNC,
                 file.as_raw_fd(),
@@ -471,7 +471,7 @@ impl Uring {
         len: usize,
         ordering: Ordering,
     ) -> Completion<'a, ()> {
-        self.with_sqe(None, false, |mut sqe| {
+        self.with_sqe(None, false, |sqe| {
             sqe.prep_rw(
                 IORING_OP_SYNC_FILE_RANGE,
                 file.as_raw_fd(),
