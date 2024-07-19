@@ -47,7 +47,7 @@ impl Drop for Uring {
                     Ordering::Drain,
                 );
                 // set the poison pill
-                sqe.user_data ^= u64::max_value();
+                sqe.user_data ^= u64::MAX;
             });
 
         // this waits for the NOP event to complete.
@@ -81,7 +81,7 @@ impl Uring {
         }
     }
 
-    /// Gets a list of io_uring opcodes supported by the
+    /// Gets a list of `io_uring` opcodes supported by the
     /// running kernel.
     ///
     /// # Warning
@@ -183,7 +183,7 @@ impl Uring {
                 IORING_OP_CONNECT,
                 socket.as_raw_fd(),
                 0,
-                len as u64,
+                u64::from(len),
                 order,
             );
 
@@ -235,7 +235,7 @@ impl Uring {
         F: AsRawFd,
         B: 'a + AsIoVec,
     {
-        let iov = iov.as_new_iovec();
+        let iov_addr = iov.as_new_iovec();
 
         self.with_sqe(None, true, |sqe| {
             sqe.prep_rw(
@@ -245,8 +245,9 @@ impl Uring {
                 0,
                 ordering,
             );
-            sqe.addr = iov.iov_base as u64;
-            sqe.len = u32::try_from(iov.iov_len).unwrap();
+            sqe.addr = iov_addr.iov_base as u64;
+            sqe.len =
+                u32::try_from(iov_addr.iov_len).unwrap();
         })
     }
 
@@ -296,7 +297,7 @@ impl Uring {
         F: AsRawFd,
         B: AsIoVec + AsIoVecMut,
     {
-        let iov = iov.as_new_iovec();
+        let iov_addr = iov.as_new_iovec();
 
         self.with_sqe(None, true, |sqe| {
             sqe.prep_rw(
@@ -306,8 +307,9 @@ impl Uring {
                 0,
                 ordering,
             );
-            sqe.addr = iov.iov_base as u64;
-            sqe.len = u32::try_from(iov.iov_len).unwrap();
+            sqe.addr = iov_addr.iov_base as u64;
+            sqe.len =
+                u32::try_from(iov_addr.iov_len).unwrap();
         })
     }
 
@@ -528,7 +530,7 @@ impl Uring {
     /// the number of bytes written.
     ///
     /// Note that the file argument is generic
-    /// for anything that supports AsRawFd:
+    /// for anything that supports `AsRawFd`:
     /// sockets, files, etc...
     pub fn write_at<'a, F, B>(
         &'a self,
@@ -564,7 +566,7 @@ impl Uring {
     ///   this one begins.
     ///
     /// Note that the file argument is generic
-    /// for anything that supports AsRawFd:
+    /// for anything that supports `AsRawFd`:
     /// sockets, files, etc...
     pub fn write_at_ordered<'a, F, B>(
         &'a self,
@@ -600,7 +602,7 @@ impl Uring {
     /// the number of bytes read.
     ///
     /// Note that the file argument is generic
-    /// for anything that supports AsRawFd:
+    /// for anything that supports `AsRawFd`:
     /// sockets, files, etc...
     pub fn read_at<'a, F, B>(
         &'a self,
@@ -634,7 +636,7 @@ impl Uring {
     ///   this one begins.
     ///
     /// Note that the file argument is generic
-    /// for anything that supports AsRawFd:
+    /// for anything that supports `AsRawFd`:
     /// sockets, files, etc...
     pub fn read_at_ordered<'a, F, B>(
         &'a self,
@@ -664,16 +666,16 @@ impl Uring {
 
     /// Don't do anything. This is
     /// mostly for debugging and tuning.
-    pub fn nop<'a>(&'a self) -> Completion<'a, ()> {
+    pub fn nop(&self) -> Completion<'_, ()> {
         self.nop_ordered(Ordering::None)
     }
 
     /// Don't do anything. This is
     /// mostly for debugging and tuning.
-    pub fn nop_ordered<'a>(
-        &'a self,
+    pub fn nop_ordered(
+        &self,
         ordering: Ordering,
-    ) -> Completion<'a, ()> {
+    ) -> Completion<'_, ()> {
         self.with_sqe(None, false, |sqe| {
             sqe.prep_rw(IORING_OP_NOP, 0, 1, 0, ordering)
         })

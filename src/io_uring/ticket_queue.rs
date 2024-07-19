@@ -3,7 +3,7 @@ use super::*;
 /// Exerts backpressure on submission threads
 /// to ensure that there are never more submissions
 /// in-flight than available slots in the completion
-/// queue. Normally io_uring would accept the excess,
+/// queue. Normally `io_uring` would accept the excess,
 /// and just drop the overflowing completions.
 #[derive(Debug)]
 pub(crate) struct TicketQueue {

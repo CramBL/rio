@@ -220,7 +220,7 @@ pub fn new() -> io::Result<Rio> {
 }
 
 /// Encompasses various types of IO structures that
-/// can be operated on as if they were a libc::iovec
+/// can be operated on as if they were a `libc::iovec`
 pub trait AsIoVec {
     /// Returns the address of this object.
     fn as_new_iovec(&self) -> libc::iovec;

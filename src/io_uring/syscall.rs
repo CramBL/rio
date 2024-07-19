@@ -53,7 +53,8 @@ pub(crate) fn enter(
         // this is strapped into an interruption
         // diaper loop because it's the one that
         // might actually block a lot
-        #[allow(unsafe_code)]
+        #[allow(unsafe_code, clippy::cast_possible_wrap)]
+        // Re: cast_possible_wrap, it wont wrap ever, sigset_t is a tiny struct.
         let ret = unsafe {
             syscall(
                 ENTER,
