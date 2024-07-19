@@ -128,12 +128,7 @@ impl Metrics {
             "count",
             "sum (s)"
         );
-        println!(
-            "{}",
-            std::iter::repeat("-")
-                .take(134)
-                .collect::<String>()
-        );
+        println!("{}", ("-").repeat(134));
 
         let p = |mut tuples: Vec<(
             String,
@@ -182,12 +177,7 @@ impl Metrics {
             lat("ticket q pop", &self.ticket_queue_pop),
         ]);
 
-        println!(
-            "{}",
-            std::iter::repeat("-")
-                .take(134)
-                .collect::<String>()
-        );
+        println!("{}", ("-").repeat(134));
         println!("cq:");
         p(vec![
             lat("cq_mu_wait", &self.cq_mu_wait),
