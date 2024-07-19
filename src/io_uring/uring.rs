@@ -708,12 +708,12 @@ impl Uring {
         self.submitted.fetch_add(submitted, Release);
     }
 
-    fn with_sqe<'a, F, C>(
-        &'a self,
+    fn with_sqe<F, C>(
+        &self,
         iovec: Option<libc::iovec>,
         msghdr: bool,
         f: F,
-    ) -> Completion<'a, C>
+    ) -> Completion<'_, C>
     where
         F: FnOnce(&mut io_uring_sqe),
         C: FromCqe,
@@ -760,6 +760,8 @@ impl Uring {
     }
 }
 
+// Not possible to truncate the length here since we cast to the typedef specified in libc
+#[allow(clippy::cast_possible_truncation)]
 fn addr2raw(
     addr: &std::net::SocketAddr,
 ) -> (*const libc::sockaddr, libc::socklen_t) {
