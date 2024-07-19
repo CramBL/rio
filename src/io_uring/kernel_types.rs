@@ -73,12 +73,8 @@ impl io_uring_sqe {
     fn apply_order(&mut self, ordering: Ordering) {
         match ordering {
             Ordering::None => {}
-            Ordering::Link => {
-                self.flags |= IOSQE_IO_LINK
-            }
-            Ordering::Drain => {
-                self.flags |= IOSQE_IO_DRAIN
-            }
+            Ordering::Link => self.flags |= IOSQE_IO_LINK,
+            Ordering::Drain => self.flags |= IOSQE_IO_DRAIN,
         }
     }
 }
@@ -162,4 +158,38 @@ pub struct io_cqring_offsets {
     pub overflow: u32,
     pub cqes: u32,
     pub resv: [u64; 2_usize],
+}
+
+#[repr(C)]
+#[derive(Default, Debug, Copy, Clone)]
+pub struct io_uring_probe_op {
+    pub op: u8,
+    pub resv: u8,
+    pub flags: u16, /* IO_URING_OP_* flags */
+    pub resv2: u32,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct io_uring_probe {
+    pub last_op: u8, /* last opcode supported */
+    pub ops_len: u8, /* length of ops[] array below */
+    pub resv: u16,
+    pub resv2: [u32; 3_usize],
+
+    // This is a variable length field in C, but the usual call
+    // to get all available ops would always use 256
+    pub ops: [io_uring_probe_op; 256],
+}
+
+impl Default for io_uring_probe {
+    fn default() -> Self {
+        Self {
+            last_op: 0,
+            ops_len: 0,
+            resv: 0,
+            resv2: [0; 3],
+            ops: [io_uring_probe_op::default(); 256],
+        }
+    }
 }
